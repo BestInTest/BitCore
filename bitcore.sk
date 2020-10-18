@@ -42,14 +42,25 @@ on load:
 		set {Antyproxy::dostawca} to "ipapi"
 	if {AntyProxy::sprProxy} is not set:
 		set {AntyProxy::sprProxy} to false
+	if {Antyproxy::zapisywanie} is not set:
+		set {Antyproxy::zapisywanie} to false
+	if {Antyproxy::zapisywanie.proxy} is not set:
+		set {Antyproxy::zapisywanie.proxy} to false
 	if file "plugins/Skript/scripts/bitcore.sk" doesn't exists:
 		send "&a&lBitCore &6&l> &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: bitcore.sk" to console and all ops
 		send "&a&lBitCore &6&l> &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
-		stop
+		if {BitCore::*} contains "Nieprawdlowa nazwa pliku":
+			stop
+		else:
+			add "Nieprawdlowa nazwa pliku" to {BitCore::*}
+			stop
+	else:
+		if {BitCore::*} contains "Nieprawdlowa nazwa pliku":
+			remove all "Nieprawdlowa nazwa pliku" from {BitCore::*}
 	broadcast "%{BitCore::*}%"
 	wait 1 tick
 	if {BitCore.aktualizacja} is true:
-		set {_BitCore.wersja} to text from "http://mctxt.c0.pl/skrypty/Wersja-BitCore.txt"
+		set {_BitCore.wersja} to text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt"
 		wait 1 second
 		if {_BitCore.wersja} is "{@Wersja}":
 			send "&a&lBitCore &6&l> &aPosiadasz aktualna wersje!" to console
@@ -64,7 +75,7 @@ on load:
 					stop
 				else:
 					send "&a&lBitCore &6&l> &cNie mozna sprawdzic aktualizacji:" to console
-					send "&a&lBitCore &6&l> &cPrawdopodbnie nie mozna uzyskac dostepu do internetu lub serwera" to console
+					send "&a&lBitCore &6&l> &cPrawdopodobnie nie mozna uzyskac dostepu do internetu lub serwera" to console
 					send "&a&lBitCore &6&l> &9Sprawdz zapore sieciowa i samo polaczenie z internetem" to console
 					add "Nie mozna uzyskac informacji o aktualizacji" to {BitCore::*}
 					send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc nie dostepne." to console
@@ -73,10 +84,9 @@ on load:
 				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.najnowszawersja}%" to console
 				send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console
 				send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console
-				wait 2 seconds
-				download from "http://mctxt.c0.pl/skrypty/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
-				wait 2 seconds
-				send "&a&lBitCore &6&l> &aNo, to chyba na tyle." to console
+				send "&a&lBitCore &6&l> &9Pobieranie" to console
+				download from "http://79.137.50.223/download/Skript/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
+				send "&a&lBitCore &6&l> &aInstalowanie" to console
 				execute console command "skript reload bitcore.sk"
 				stop
 			else:
@@ -104,9 +114,25 @@ command /bit [<text>] [<text>] [<text>]:
 			open chest with 2 rows named "&a&lBitCore" to player
 			wait 2 ticks
 			if {gui.%player%} is true:
-				set {_BitCore.wersja} to text from "http://mctxt.c0.pl/skrypty/Wersja-BitCore.txt"
+				set {_BitCore.wersja} to text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt"
+				set {_2Step.wersja} to text from "http://79.137.50.223/download/Skript/Wersja.txt"
+				set {_AntyProxy.wersja} to text from "http://79.137.50.223/download/Skript/Wersja-Antyproxy.txt"
+				set {_Wersja.Pinger} to text from "http://79.137.50.223/download/Skript/Wersja-Pinger.txt"
 				if {_BitCore.wersja} is not set:
 					set {_BitCore.wersja} to "-"
+					set {_2Step.wersja} to "-"
+					set {_AntyProxy.wersja} to "-"
+					set {_Wersja.Pinger} to "-"
+					if {BitCore::*} don't contain "Nie mozna uzyskac informacji o aktualizacji":
+						add "Nie mozna uzyskac informacji o aktualizacji" to {BitCore::*}
+						send "&a&lBitCore &6&l> &cNie mozna sprawdzic aktualizacji:" to console and all ops
+						send "&a&lBitCore &6&l> &cPrawdopodbnie nie mozna uzyskac dostepu do internetu lub serwera" to console and all ops
+						send "&a&lBitCore &6&l> &9Sprawdz zapore sieciowa i samo polaczenie z internetem" to console and all ops
+						send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc nie dostepne." to console and all ops
+				else:
+					if {BitCore::*} contains "Nie mozna uzyskac informacji o aktualizacji":
+						send "&a&lBitCore &6&l> &2Nawiazano polaczenie. Wylaczanie trybu offline." to console and all ops
+						remove all "Nie mozna uzyskac informacji o aktualizacji" from {BitCore::*}
 				if {BitCore.aktualizacja} is true:
 					if {_BitCore.wersja} is "{@Wersja}":
 						format slot 0 of player with 1 of glass pane named " " to be unstealable
@@ -126,7 +152,7 @@ command /bit [<text>] [<text>] [<text>]:
 				if {BitCore::*} is not set:
 					format slot 1 of player with 1 of glass pane named " " to be unstealable
 				else:
-					format slot 1 of player with 1 of yellow wool named "&6Wykryto problemy:" with lore "&7%{BitCore::*}%" to be unstealable
+					format slot 1 of player with 1 of yellow wool named "&6Wykryto problemy" with lore " " and "&8[&aKliknij aby zobaczyc&8]" to close then run [execute player command "bit listaproblemow"]
 			else:
 				stop
 			if {gui.%player%} is true:
@@ -138,13 +164,6 @@ command /bit [<text>] [<text>] [<text>]:
 			else:
 				stop
 			if {gui.%player%} is true:
-				set {_2Step.wersja} to text from "http://mctxt.c0.pl/skrypty/Wersja.txt"
-				set {_AntyProxy.wersja} to text from "http://mctxt.c0.pl/skrypty/Wersja-Antyproxy.txt"
-				set {_Wersja.Pinger} to text from "http://mctxt.c0.pl/skrypty/Wersja-Pinger.txt"
-				if {_2Step.wersja} is not set:
-					set {_2Step.wersja} to "-"
-					set {_AntyProxy.wersja} to "-"
-					set {_Wersja.Pinger} to "-"
 				format slot 4 of player with 1 of book named "&aInformacje o BitCore:" with lore "&7BitCore to narzedzie stworzone" and "&7do ochrony serwera przed roznymi atakami" and " " and "&aWersja zainstalowana&7: {@Wersja}" and "&bDane z serwera online&7:" and " " and "&aBitCore: &7%{_BitCore.wersja}%" and "&c2Step&8: &7%{_2Step.wersja}%" and "&6AntyProxy&8: &7%{_AntyProxy.wersja}%" and "&bPinger: &7%{_Wersja.Pinger}%" and " " to close then run [make player execute command "bit zarzadzaj"]
 			else:
 				stop
@@ -215,7 +234,7 @@ command /bit [<text>] [<text>] [<text>]:
 			else:
 				stop
 			if {gui.%player%} is true:
-				format slot 17 of player with 1 of lever named " &fPomoc " to close then run [make player execute "bit pomoc"]
+				format slot 17 of player with 1 of lever named " &fPomoc " with lore "&f&oWkrotce" to close then run [make player execute "bit pomoc"]
 			else:
 				stop
 		if arg 1 is "zarzadzaj":
@@ -274,6 +293,8 @@ command /bit [<text>] [<text>] [<text>]:
 					stop
 				if {gui.%player%} is true:
 					format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
+				else:
+					stop
 			else:
 				if arg 2 is "pinger":
 					wait 2 ticks
@@ -283,16 +304,16 @@ command /bit [<text>] [<text>] [<text>]:
 					wait 1 tick
 					if {gui.%player%} is true:
 						if {Pinger} is true:
-							format slot 0 of player with glowing 1 of redstone torch named "&cLogi z pingowania rejestrowane w konsoli" with lore "&c(czyli rowniez w logach serwera)." to close then run [set {Pinger} to false] -> [send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds] 
+							format slot 0 of player with glowing 1 of redstone torch named "&cLogi z pingowania rejestrowane w konsoli" with lore "&c(czyli rowniez w logach serwera)." to close then run [set {Pinger} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds] 
 						else:
-							format slot 0 of player with 1 of redstone torch named "&cLogi z pingowania rejestrowane w konsoli" with lore "&c(czyli rowniez w logach serwera)." to close then run [set {Pinger} to true] -> [send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds]
+							format slot 0 of player with 1 of redstone torch named "&cLogi z pingowania rejestrowane w konsoli" with lore "&c(czyli rowniez w logach serwera)." to close then run [set {Pinger} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Pingerdlaopa} is true:
-							format slot 1 of player with glowing 1 of redstone torch named "&cPowiadomienie o pingowaniu" with lore "&cwyswietlane dla wszystkich graczy z uprawnieniem operatora." to close then run [set {Pingerdlaopa} to false] -> [send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds]
+							format slot 1 of player with glowing 1 of redstone torch named "&cPowiadomienie o pingowaniu" with lore "&cwyswietlane dla wszystkich graczy z uprawnieniem operatora." to close then run [set {Pingerdlaopa} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds]
 						else:
-							format slot 1 of player with 1 of redstone torch named "&cPowiadomienie o pingowaniu" with lore "&cwyswietlane dla wszystkich graczy z uprawnieniem operatora." to close then run [set {Pingerdlaopa} to true] -> [send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds]
+							format slot 1 of player with 1 of redstone torch named "&cPowiadomienie o pingowaniu" with lore "&cwyswietlane dla wszystkich graczy z uprawnieniem operatora." to close then run [set {Pingerdlaopa} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonano zmiany!" to player for 3 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
@@ -301,23 +322,23 @@ command /bit [<text>] [<text>] [<text>]:
 						stop
 					if {gui.%player%} is true:
 						if {Dostawca.geo} is "geoip-db":
-							format slot 3 of player with glowing 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [send title "&c&lBLAD!" with subtitle "&cGeoip-db jest juz wybrany jako dostawca uslugi!" to player for 5 seconds]
+							format slot 3 of player with glowing 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [execute console command "playertitle %player% &c&lBLAD! &cGeoip-db jest juz wybrany jako dostawca uslugi!"] #[send title "&c&lBLAD!" with subtitle "&cGeoip-db jest juz wybrany jako dostawca uslugi!" to player for 5 seconds]
 						else:
-							format slot 3 of player with 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [set {Dostawca.geo} to "geoip-db"] -> [send title "&a&lSUKCES!" with subtitle "&2Geoip-db jest teraz dostawca uslugi!" to player for 5 seconds]
+							format slot 3 of player with 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [set {Dostawca.geo} to "geoip-db"] -> [execute console command "playertitle %player% &a&lSUKCES! &2Geoip-db jest teraz dostawca uslugi!"] #[send title "&a&lSUKCES!" with subtitle "&2Geoip-db jest teraz dostawca uslugi!" to player for 5 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Dostawca.geo} is "ipapi":
-							format slot 4 of player with glowing 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [send title "&c&lBLAD!" with subtitle "&cIPapi jest juz wybrany jako dostawca uslugi!" to player for 5 seconds]
+							format slot 4 of player with glowing 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [execute console command "playertitle %player% &c&lBLAD! &cIPapi jest juz wybrany jako dostawca uslugi!"] #[send title "&c&lBLAD!" with subtitle "&cIPapi jest juz wybrany jako dostawca uslugi!" to player for 5 seconds]
 						else:
-							format slot 4 of player with 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [set {Dostawca.geo} to "ipapi"] -> [send title "&a&lSUKCES!" with subtitle "&2IPapi jest teraz dostawca uslugi!" to player for 5 seconds]
+							format slot 4 of player with 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [set {Dostawca.geo} to "ipapi"] -> [execute console command "playertitle %player% &a&lSUKCES! &2IPapi jest teraz dostawca uslugi!"] #[send title "&a&lSUKCES!" with subtitle "&2IPapi jest teraz dostawca uslugi!" to player for 5 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Dostawca.geo} is "ip-api":
-							format slot 5 of player with glowing 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [send title "&c&lBLAD!" with subtitle "&cIP-api jest juz wybrany jako dostawca uslugi!" to player for 5 seconds]
+							format slot 5 of player with glowing 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [execute console command "playertitle %player% &c&lBLAD! &cIP-api jest juz wybrany jako dostawca uslugi!"] #[send title "&c&lBLAD!" with subtitle "&cIP-api jest juz wybrany jako dostawca uslugi!" to player for 5 seconds]
 						else:
-							format slot 5 of player with 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez pingowanie" to close then run [set {Dostawca.geo} to "ip-api"] -> [send title "&a&lSUKCES!" with subtitle "&2IP-api jest teraz dostawca uslugi!" to player for 5 seconds]
+							format slot 5 of player with 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez pingowanie" to close then run [set {Dostawca.geo} to "ip-api"] -> [execute console command "playertitle %player% &a&lSUKCES! &2IP-api jest teraz dostawca uslugi!"] #[send title "&a&lSUKCES!" with subtitle "&2IP-api jest teraz dostawca uslugi!" to player for 5 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
@@ -326,13 +347,15 @@ command /bit [<text>] [<text>] [<text>]:
 						stop
 					if {gui.%player%} is true:
 						if {Aktualizacja.Pinger} is true:
-							format slot 7 of player with glowing 1 of lever named "&aAktualizacje" to close then run [set {Aktualizacja.Pinger} to false] -> [send title "&a&lSUKCES!" with subtitle "&2Wylaczono aktualizacje!" to player for 5 seconds]
+							format slot 7 of player with glowing 1 of lever named "&aAktualizacje" to close then run [set {Aktualizacja.Pinger} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Wylaczono aktualizacje!"] #[send title "&a&lSUKCES!" with subtitle "&2Wylaczono aktualizacje!" to player for 5 seconds]
 						else:
-							format slot 7 of player with 1 of lever named "&aAktualizacje" to close then run [set {Aktualizacja.Pinger} to true] -> [send title "&a&lSUKCES!" with subtitle "&2Wlaczono aktualizacje!" to player for 5 seconds]
+							format slot 7 of player with 1 of lever named "&aAktualizacje" to close then run [set {Aktualizacja.Pinger} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Wlaczono aktualizacje!"] #[send title "&a&lSUKCES!" with subtitle "&2Wlaczono aktualizacje!" to player for 5 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
+					else:
+						stop
 				if arg 2 is "antyproxy":
 					wait 2 ticks
 					set {gui.%player%} to true
@@ -341,90 +364,278 @@ command /bit [<text>] [<text>] [<text>]:
 					wait 1 tick
 					if {gui.%player%} is true:
 						if {Antyproxy::wlaczenie} is true:
-							format slot 0 of player with glowing 1 of redstone torch named "&aWlaczono sprawdzanie lokalizacji" to close then run [set {Antyproxy::wlaczenie} to false] -> [send title "&a&lSUKCES!" with subtitle "&2Wylaczono antyproxy!" to player for 3 seconds] 
+							format slot 0 of player with glowing 1 of redstone torch named "&aWlaczono sprawdzanie lokalizacji" to close then run [set {Antyproxy::wlaczenie} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Wylaczono antyproxy!"] #[send title "&a&lSUKCES!" with subtitle "&2Wylaczono antyproxy!" to player for 3 seconds] 
 						else:
-							format slot 0 of player with 1 of redstone torch named "&cWylaczono sprawdzanie lokalizacji" to close then run [set {Antyproxy::wlaczenie} to true] -> [send title "&a&lSUKCES!" with subtitle "&2Wlaczono antyproxy!" to player for 3 seconds]
+							format slot 0 of player with 1 of redstone torch named "&cWylaczono sprawdzanie lokalizacji" to close then run [set {Antyproxy::wlaczenie} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Wlaczono antyproxy!"] #[send title "&a&lSUKCES!" with subtitle "&2Wlaczono antyproxy!" to player for 3 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
-						if {AntyProxy::sprProxy} is true:
-							format slot 1 of player with glowing 1 of redstone torch named "&9Sprawdzanie statusu proxy" with lore "&8Blokuje polaczenia, ktore pochodza od" and "&8proxy, VPN i TORa (nawet jezeli IP jest polskie)." to close then run [set {AntyProxy::sprProxy} to false] -> [send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
+						if {Antyproxy::zapisywanie.proxy} is true:
+							format slot 1 of player with glowing 1 of chest named "&bZapisywanie sprawdzonych adresow (proxy)" with lore "&7Przyspiesza proces sprawdzania IP" and "&7(moze zwiekszyc zuzycie pamieci)" and " " and "&8[&aWlaczone&8]" to close then run [set {Antyproxy::zapisywanie.proxy} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
 						else:
-							format slot 1 of player with 1 of redstone torch named "&9Sprawdzanie statusu proxy" with lore "&8Blokuje polaczenia, ktore pochodza od" and "&8proxy, VPN i TORa (nawet jezeli IP jest polskie)." to close then run [set {AntyProxy::sprProxy} to true] -> [send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
+							format slot 1 of player with 1 of chest named "&bZapisywanie sprawdzonych adresow (proxy)" with lore "&7Przyspiesza proces sprawdzania IP" and "&7(moze zwiekszyc zuzycie pamieci)" and " " and "&8[&cWylaczone&8]" to close then run [set {Antyproxy::zapisywanie.proxy} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
-						format slot 2 of player with 1 of glass pane named " " to be unstealable
+						if {Antyproxy::zapisywanie} is true:
+							format slot 2 of player with glowing 1 of chest named "&bZapisywanie sprawdzonych adresow" with lore "&7Przyspiesza proces sprawdzania IP" and "&7(moze zwiekszyc zuzycie pamieci)" and " " and "&8[&aWlaczone&8]" to close then run [set {Antyproxy::zapisywanie} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
+						else:
+							format slot 2 of player with 1 of chest named "&bZapisywanie sprawdzonych adresow" with lore "&7Przyspiesza proces sprawdzania IP" and "&7(moze zwiekszyc zuzycie pamieci)" and " " and "&8[&cWylaczone&8]" to close then run [set {Antyproxy::zapisywanie} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Antyproxy::dostawca} is "geoip-db":
-							format slot 3 of player with glowing 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [send title "&c&lBLAD!" with subtitle "&cGeoip-db jest juz wybrany jako dostawca uslugi!" to player for 4 seconds]
+							format slot 3 of player with glowing 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [execute console command "playertitle %player% &c&lBLAD! &cGeoip-db jest juz wybrany jako dostawca uslugi!"] #[send title "&c&lBLAD!" with subtitle "&cGeoip-db jest juz wybrany jako dostawca uslugi!" to player for 4 seconds]
 						else:
-							format slot 3 of player with 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [set {Antyproxy::dostawca} to "geoip-db"] -> [send title "&a&lSUKCES!" with subtitle "&2Geoip-db jest teraz dostawca uslugi!" to player for 4 seconds]
+							format slot 3 of player with 1 of string named "&a&lGeoip-db" with lore "&8Jezeli doswiadczasz bledow podczas wykrywania" and "&8lokalizacji adresu IP to zmien na innego dostawce uslugi." to close then run [set {Antyproxy::dostawca} to "geoip-db"] -> [execute console command "playertitle %player% &a&lSUKCES! &2Geoip-db jest teraz dostawca uslugi!"] #[send title "&a&lSUKCES!" with subtitle "&2Geoip-db jest teraz dostawca uslugi!" to player for 4 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Antyproxy::dostawca} is "ipapi":
-							format slot 4 of player with glowing 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [send title "&c&lBLAD!" with subtitle "&cIPapi jest juz wybrany jako dostawca uslugi!" to player for 4 seconds]
+							format slot 4 of player with glowing 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [execute console command "playertitle %player% &c&lBLAD! &cIPapi jest juz wybrany jako dostawca uslugi!"] #[send title "&c&lBLAD!" with subtitle "&cIPapi jest juz wybrany jako dostawca uslugi!" to player for 4 seconds]
 						else:
-							format slot 4 of player with 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [set {Antyproxy::dostawca} to "ipapi"] -> [send title "&a&lSUKCES!" with subtitle "&2IPapi jest teraz dostawca uslugi!" to player for 4 seconds]
+							format slot 4 of player with 1 of string named "&e&lIPapi" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 1000 dostarczen na dzien wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [set {Antyproxy::dostawca} to "ipapi"] -> [execute console command "playertitle %player% &a&lSUKCES! &2IPapi jest teraz dostawca uslugi!"] #[send title "&a&lSUKCES!" with subtitle "&2IPapi jest teraz dostawca uslugi!" to player for 4 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Antyproxy::dostawca} is "ip-api":
-							format slot 5 of player with glowing 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [send title "&c&lBLAD!" with subtitle "&cIP-api jest juz wybrany jako dostawca uslugi!" to player for 4 seconds]
+							format slot 5 of player with glowing 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez antyproxy." to close then run [execute console command "playertitle %player% &c&lBLAD! &cIP-api jest juz wybrany jako dostawca uslugi!"] #[send title "&c&lBLAD!" with subtitle "&cIP-api jest juz wybrany jako dostawca uslugi!" to player for 4 seconds]
 						else:
-							format slot 5 of player with 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez pingowanie" to close then run [set {Antyproxy::dostawca} to "ip-api"] -> [send title "&a&lSUKCES!" with subtitle "&2IP-api jest teraz dostawca uslugi!" to player for 4 seconds]
+							format slot 5 of player with 1 of string named "&9&lIP-api" with lore "&8&lSzybki i sprawny dostawca." and "&cPosiada limit 45 dostarczen na &nminute&r&c wiec zalecany" and "&con jest tylko na mniejsze i srednie serwery oraz" and "&ctylko do sprawdzania adresow IP przez pingowanie" to close then run [set {Antyproxy::dostawca} to "ip-api"] -> [execute console command "playertitle %player% &a&lSUKCES! &2IP-api jest teraz dostawca uslugi!"] #[send title "&a&lSUKCES!" with subtitle "&2IP-api jest teraz dostawca uslugi!" to player for 4 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
-						format slot 6 of player with 1 of glass pane named " " to be unstealable
+						if {AntyProxy::sprProxy} is true:
+							format slot 6 of player with glowing 1 of redstone torch named "&9Sprawdzanie statusu proxy" with lore "&8Blokuje polaczenia, ktore pochodza od" and "&8proxy, VPN i TORa (nawet jezeli IP jest polskie)." to close then run [set {AntyProxy::sprProxy} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
+						else:
+							format slot 6 of player with 1 of redstone torch named "&9Sprawdzanie statusu proxy" with lore "&8Blokuje polaczenia, ktore pochodza od" and "&8proxy, VPN i TORa (nawet jezeli IP jest polskie)." to close then run [set {AntyProxy::sprProxy} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Poprawnie dokonano zmiany!"] #[send title "&a&lSUKCES!" with subtitle "&2Poprawnie dokonany zmiany!" to player for 3 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						if {Antyproxy::update} is true:
-							format slot 7 of player with glowing 1 of lever named "&aAktualizacje" to close then run [set {Antyproxy::update} to false] -> [send title "&a&lSUKCES!" with subtitle "&2Wylaczono aktualizacje!" to player for 5 seconds]
+							format slot 7 of player with glowing 1 of lever named "&aAktualizacje" to close then run [set {Antyproxy::update} to false] -> [execute console command "playertitle %player% &a&lSUKCES! &2Wylaczono aktualizacje!"] #[send title "&a&lSUKCES!" with subtitle "&2Wylaczono aktualizacje!" to player for 5 seconds]
 						else:
-							format slot 7 of player with 1 of lever named "&aAktualizacje" to close then run [set {Antyproxy::update} to true] -> [send title "&a&lSUKCES!" with subtitle "&2Wlaczono aktualizacje!" to player for 5 seconds]
+							format slot 7 of player with 1 of lever named "&aAktualizacje" to close then run [set {Antyproxy::update} to true] -> [execute console command "playertitle %player% &a&lSUKCES! &2Wlaczono aktualizacje!"] #[send title "&a&lSUKCES!" with subtitle "&2Wlaczono aktualizacje!" to player for 5 seconds]
 					else:
 						stop
 					if {gui.%player%} is true:
 						format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
 					else:
 						stop
+		if arg 1 is "listaproblemow":
+			if arg 2 is not set:
+				wait 2 ticks
+				set {gui.%player%} to true
+				wait 1 tick
+				open chest with 4 rows named "&a&lBitCore &7&l&m&o|&e&l problemy" to player
+				wait 1 tick
+				if {gui.%player%} is true:
+					format slot 0 of player with 1 of book named "BitCore" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nie mozna uzyskac informacji o aktualizacji":
+						format slot 1 of player with 1 of green wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 1 of player with 1 of red wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku":
+						format slot 2 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 2 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 3 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 4 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 5 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 6 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 7 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 9 of player with 1 of book named "2Step" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nie mozna uzyskac informacji o aktualizacji (2Step)":
+						format slot 10 of player with 1 of green wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 10 of player with 1 of red wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku (2Step)":
+						format slot 11 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 11 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 12 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 13 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 14 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 15 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 16 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 17 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 18 of player with 1 of book named "AntyPrcxy" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nie mozna uzyskac informacji o aktualizacji (AntyPrcxy)":
+						format slot 19 of player with 1 of green wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 19 of player with 1 of red wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku (AntyProxy)":
+						format slot 20 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 20 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 21 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 22 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 23 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 24 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 25 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 26 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 27 of player with 1 of book named "Pinger" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nie mozna uzyskac informacji o aktualizacji (Pinger)":
+						format slot 28 of player with 1 of green wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 28 of player with 1 of red wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku (Pinger)":
+						format slot 29 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					else:
+						format slot 29 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 30 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 31 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 32 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 33 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 34 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
+				if {gui.%player%} is true:
+					format slot 35 of player with 1 of glass pane named " " to be unstealable
+				else:
+					stop
 		if arg 1 is "autoaktualizacja":
 			if {BitCore.aktualizacja} is true:
 				if {BitCore.autoaktualizacja} is true:
-					send title "&c&lBLAD!" with subtitle "&cAutoaktualizacja jest juz wlaczona." to player for 5 seconds
+					execute console command "playertitle %player% &c&lBLAD! &cAutoaktualizacja jest juz wlaczona."
+					#send title "&c&lBLAD!" with subtitle "&cAutoaktualizacja jest juz wlaczona." to player for 5 seconds
 					stop
 				else:
-					send title "&a&lSUKCES" with subtitle "&aAutoaktualizacja wlaczona." to player for 5 seconds
+					execute console command "playertitle %player% &a&lSUKCES &aAutoaktualizacja wlaczona."
+					#send title "&a&lSUKCES" with subtitle "&aAutoaktualizacja wlaczona." to player for 5 seconds
 					set {BitCore.aktualizacja} to true
 					set {BitCore.autoaktualizacja} to true
 					stop
 			else:
 				set {BitCore.aktualizacja} to true
 				if {BitCore.autoaktualizacja} is true:
-					send title "&c&lBLAD!" with subtitle "&cAutoaktualizacja jest juz wlaczona." to player for 5 seconds
+					execute console command "playertitle %player% &c&lBLAD! &cAutoaktualizacja jest juz wlaczona."
+					#send title "&c&lBLAD!" with subtitle "&cAutoaktualizacja jest juz wlaczona." to player for 5 seconds
 					stop
 				else:
 					set {BitCore.aktualizacja} to true
 					set {BitCore.autoaktualizacja} to true
-					send title "&a&lSUKCES" with subtitle "&aAutoaktualizacja wlaczona." to player for 5 seconds
+					execute console command "playertitle %player% &a&lSUKCES &aAutoaktualizacja wlaczona."
+					#send title "&a&lSUKCES" with subtitle "&aAutoaktualizacja wlaczona." to player for 5 seconds
 					stop
 		if arg 1 is "aktualizacjamanualna":
 			if {BitCore.aktualizacja} is true:
 				if {BitCore.autoaktualizacja} is true:
 					set {BitCore.autoaktualizacja} to false
-					send title "&a&lSUKCES" with subtitle "&aAktualizacja manualna wlaczona." to player for 5 seconds
+					execute console command "playertitle %player% &a&lSUKCES &aAktualizacja manualna wlaczona."
+					#send title "&a&lSUKCES" with subtitle "&aAktualizacja manualna wlaczona." to player for 5 seconds
 				else:
-					send title "&c&lBLAD!" with subtitle "&cAktualizacja manualna jest juz wlaczona." to player for 5 seconds
+					execute console command "playertitle %player% &c&lBLAD! &cAktualizacja manualna jest juz wlaczona."
+					#send title "&c&lBLAD!" with subtitle "&cAktualizacja manualna jest juz wlaczona." to player for 5 seconds
 					stop
 			else:
 				if {BitCore.autoaktualizacja} is true:
 					set {BitCore.autoaktualizacja} to false
-				send title "&a&lSUKCES" with subtitle "&aAktualizacja manualna wlaczona." to player for 5 seconds
+				execute console command "playertitle %player% &a&lSUKCES &aAktualizacja manualna wlaczona."
+				#send title "&a&lSUKCES" with subtitle "&aAktualizacja manualna wlaczona." to player for 5 seconds
 				set {BitCore.aktualizacja} to true
 				stop
 		if arg 1 is "wylaczaktualizacje":
@@ -432,33 +643,37 @@ command /bit [<text>] [<text>] [<text>]:
 				set {BitCore.aktualizacja} to false
 				if {BitCore.autoaktualizacja} is true:
 					set {BitCore.autoaktualizacja} to false
-					send title "&a&lSUKCES" with subtitle "&aAktualizacje zostaly wylaczone." to player for 5 seconds
+					execute console command "playertitle %player% &a&lSUKCES &aAktualizacje zostaly wylaczone."
+					#send title "&a&lSUKCES" with subtitle "&aAktualizacje zostaly wylaczone." to player for 5 seconds
 				else:
-					send title "&a&lSUKCES" with subtitle "&aAktualizacje zostaly wylaczone." to player for 5 seconds
+					execute console command "playertitle %player% &a&lSUKCES &aAktualizacje zostaly wylaczone."
+					#send title "&a&lSUKCES" with subtitle "&aAktualizacje zostaly wylaczone." to player for 5 seconds
 					stop
 			else:
 				if {BitCore.autoaktualizacja} is true:
 					set {BitCore.autoaktualizacja} to false
-					send title "&a&lSUKCES" with subtitle "&aAktualizacje zostaly wylaczone." to player for 5 seconds
+					execute console command "playertitle %player% &a&lSUKCES &aAktualizacje zostaly wylaczone."
+					#send title "&a&lSUKCES" with subtitle "&aAktualizacje zostaly wylaczone." to player for 5 seconds
 					set {BitCore.aktualizacja} to true
 					stop
 				else:
 					if {BitCore.autoaktualizacja} is false:
-						send title "&c&lBLAD!" with subtitle "&cAktualizacje sa juz wylaczone." to player for 5 seconds
+						execute console command "playertitle %player% &c&lBLAD! &cAktualizacje sa juz wylaczone."
+						#send title "&c&lBLAD!" with subtitle "&cAktualizacje sa juz wylaczone." to player for 5 seconds
 						stop
 		if arg 1 is "instalacja":
 			if arg 2 is "pinger":
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9Pinger&a." to console and all ops
 				create file "plugins/Skript/scripts/Pinger.sk"
 				wait 1 second
-				download from "http://mctxt.c0.pl/skrypty/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
+				download from "http://79.137.50.223/download/Skript/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
 				execute console command "skript reload Pinger.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9Pinger&a." to console and all ops
 			if arg 2 is "2step":
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &c2Step&a." to console and all ops
 				create file "plugins/Skript/scripts/2step.sk"
 				wait 1 second
-				download from "http://mctxt.c0.pl/skrypty/Aktualna-awaria-Kod.txt" to "plugins/Skript/scripts/2step.sk"
+				download from "http://79.137.50.223/download/Skript/Aktualna-awaria-Kod.txt" to "plugins/Skript/scripts/2step.sk"
 				execute console command "skript reload 2step.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &c2Step&a." to console and all ops
 				send "&c&lWazne:&r &4Pamietaj aby wykonac konfiguracje skryptu 2Step&c." to console and all ops
@@ -466,7 +681,7 @@ command /bit [<text>] [<text>] [<text>]:
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9AntyProxy&a." to console and all ops
 				create file "plugins/Skript/scripts/antyproxy.sk"
 				wait 1 second
-				download from "http://mctxt.c0.pl/skrypty/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
+				download from "http://79.137.50.223/download/Skript/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
 				execute console command "skript reload antyproxy.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9AntyProxy&a." to console and all ops
 			if arg 2 is "bitcore":
@@ -475,19 +690,18 @@ command /bit [<text>] [<text>] [<text>]:
 					send "&a&lBitCore &6&l> &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
 					stop
 				wait 1 tick
-				if "{@Wersja}" is text from "http://mctxt.c0.pl/skrypty/Wersja-BitCore.txt":
+				if "{@Wersja}" is text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt":
 					send "&a&lBitCore &6&l> &aPosiadasz aktualna wersje!" to console
 					stop
 				else:
-					set {_BitCore.najnowszawersja} to text from "http://mctxt.c0.pl/skrypty/Wersja-BitCore.txt"
+					set {_BitCore.najnowszawersja} to text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt"
 					wait 1 tick
 					send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.najnowszawersja}%" to console and all ops
 					send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console and all ops
 					send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console and all ops
-					wait 2 seconds
-					download from "http://mctxt.c0.pl/skrypty/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
-					wait 2 seconds
-					send "&a&lBitCore &6&l> &aNo, to chyba na tyle." to console and all ops
+					send "&a&lBitCore &6&l> &9Pobieranie" to console and all ops
+					download from "http://79.137.50.223/download/Skript/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
+					send "&a&lBitCore &6&l> &aInstalowanie" to console and all ops
 					execute console command "skript reload bitcore.sk"
 					stop
 		if arg 1 is "odinstaluj":
@@ -531,6 +745,8 @@ command /bit [<text>] [<text>] [<text>]:
 					stop
 				if {gui.%player%} is true:
 					format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
+				else:
+					stop
 			else:
 				if arg 2 is "pinger":
 					send "&a&lBitCore &6&l> &cOdinstalowywanie Pinger"
