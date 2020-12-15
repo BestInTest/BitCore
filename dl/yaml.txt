@@ -1,0 +1,33 @@
+on load:
+	set {konieckonfiguratora} to false
+	if folder "plugins/2Step/" doesn't exists:
+		create folder "plugins/2Step"
+		send "&a[Konfigurator] &eRozpoczynanie konfiguracji" to console
+	wait 1 tick
+	if file "plugins/2Step/config.yml" doesn't exist:
+		create file "plugins/2Step/config.yml"
+	wait 1 tick
+	if yaml value "Prefix" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "Prefix" from file "plugins/2Step/config.yml" to "&8[&c2Step&8]"
+	if yaml value "Haslo.Domyslne" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "Haslo.Domyslne" from file "plugins/2Step/config.yml" to "ArPxACQ8e3VqVTW8DRZy9Y6R2XZQPWEQ"
+	if yaml value "aktualizacja.sprawdzanie-aktualizacji" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "aktualizacja.sprawdzanie-aktualizacji" from file "plugins/2Step/config.yml" to "true"
+	if yaml value "aktualizacja.sprawdzanie-aktualizacji-beta" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "aktualizacja.sprawdzanie-aktualizacji-beta" from file "plugins/2Step/config.yml" to "false"
+	if yaml value "komunikaty.wyrzucanie" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "komunikaty.wyrzucanie" from file "plugins/2Step/config.yml" to "Internal Exception: io.netty.handler.codec.DecoderException: java.lang.RuntimeException: An internal error occured."
+	if yaml value "komunikaty.Poprawne-logowanie" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "komunikaty.Poprawne-logowanie" from file "plugins/2Step/config.yml" to "&aPoprawnie zalogowano"
+	if yaml value "komunikaty.Juz-zalogowano" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "komunikaty.Juz-zalogowano" from file "plugins/2Step/config.yml" to "&aJestes juz zalogowany."
+	if yaml value "komunikaty.Niepoprawne-haslo" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "komunikaty.Niepoprawne-haslo" from file "plugins/2Step/config.yml" to "&cNiepoprawne haslo"
+	if yaml value "komunikaty.Brak-uprawnien" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "komunikaty.Brak-uprawnien" from file "plugins/2Step/config.yml" to "&cNie masz permisji."
+	if yaml value "komunikaty.Wyrzucenie-przy-ustawianiu-hasla" from file "plugins/2Step/config.yml" doesn't exist:
+		set yaml value "komunikaty.Wyrzucenie-przy-ustawianiu-hasla" from file "plugins/2Step/config.yml" to "Wejdz ponownie"
+	send "&a[Konfigurator] &eKonfiguracja zakonczona!" to console
+	send "%yaml value ""Prefix"" from file ""plugins/2Step/config.yml""% &aStartuje..." to console
+	execute console command "sk reload 2step.sk"
+	set {konieckonfiguratora} to true
