@@ -1,0 +1,93 @@
+options:
+	wersja: 1.3
+
+on load:
+	if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
+		send "&9&l[AntyProxy] &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: antyproxy.sk" to console and all ops
+		send "&9&l[AntyProxy] &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
+		stop
+	if {Antyproxy::update} is true:
+		if "{@wersja}" is text from "http://mctxt.c0.pl/skrypty/Wersja-Antyproxy.txt":
+			stop
+		else:
+			send "&9&l[AntyProxy] &aAktualizacja..." to console and all ops
+			download from "http://mctxt.c0.pl/skrypty/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
+			wait 2 second
+			execute console command "skript reload antyproxy.sk"
+			send "&9&l[AntyProxy] &aZaktualizowano." to console and all ops
+
+on connect:
+	if {Antyproxy::wyjatek.%player's ip%} is false:
+		kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu zablokowania Twojego IP w module."
+		stop
+	if {Antyproxy::wyjatek.%player's ip%} is true:
+		stop
+	if {AntyProxy::sprProxy} is true:
+		if text from "https://blackbox.ipinfo.app/lookup/%player's ip%" is "Y":
+			kick player due to "&7Twoj adres IP zostal uznany za proxy. Jezli uwazasz, ze to blad zglos to do nas: &9&odiscord.gg/4SS8WRY"
+			stop
+	if {Antyproxy::wlaczenie} is true:
+		if {Antyproxy::dostawca} is "ipapi":
+			if text from "https://ipapi.co/%ip%/country/" is "PL":
+				wait 1 tick
+				stop
+			else:
+				kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu wykrycia polaczenia niepochodzacego z Polski."
+		if {Antyproxy::dostawca} is "ip-api":
+			if text from "http://ip-api.com/json/%ip%?fields=country" is "{""country"":""Poland""}":
+				wait 1 tick
+				stop
+			else:
+				kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu wykrycia polaczenia niepochodzacego z Polski."
+		if {Antyproxy::dostawca} is "geoip-db":
+			if text from "http://geolocation-db.com/jsonp/%ip%/" contains "Poland":
+				wait 1 tick
+				stop
+			else:
+				kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu wykrycia polaczenia niepochodzacego z Polski."
+	else:
+		stop
+
+command /antyproxy [<text>] [<text>]:
+	permission: antyproxy.zarzadzanie
+	permission message: &9&l[AntyProxy] &cOdmowa dostepu.
+	trigger:
+		if arg 1 is not set:
+			send "&7&l----------------------"
+			send "&9&l[AntyProxy] &cUzycie:"
+			send "&8/antyproxy &7zezwalaj &8<&eIP&8> - Zezwala na polaczenia z podanego IP"
+			send "&8/antyproxy &7blokuj &8<&eIP&8> - Blokuje polaczenia z podanego IP"
+			send "&8/antyproxy &7sprawdz &8<&eIP&8> - Sprawdzanie stanu blokady IP"
+			send "&7&l----------------------"
+			stop
+		if arg 1 is "zezwalaj":
+			if arg 2 contains ".":
+				set {Antyproxy::wyjatek.%arg-2%} to true
+				send "&9&l[AntyProxy] &cDodano adres IP %arg-2%&c do wyjatkow."
+				stop
+			else:
+				send "&9&l[AntyProxy] &cBlad! Adres %arg-2%&c nie moze zostac dodany (prawdopodobnie nie jest numerem)"
+		else:
+			if arg 1 is "blokuj":
+				if arg 2 contains ".":
+					set {Antyproxy::wyjatek.%arg-2%} to false
+					send "&9&l[AntyProxy] &cDodano adres IP %arg-2%&c do adresow blokowanych."
+					stop
+				else:
+					send "&9&l[AntyProxy] &cBlad! Adres %arg-2%&c nie moze zostac dodany (prawdopodobnie nie jest numerem)"
+			else:
+				if arg 1 is "sprawdz":
+					if arg 2 contains ".":
+						if {Antyproxy::wyjatek.%arg-2%} is true:
+							send "&9&l[AntyProxy] &cStatus dla adresu %arg-2%: &azezwolono"
+							stop
+						if {Antyproxy::wyjatek.%arg-2%} is false:
+							send "&9&l[AntyProxy] &cStatus dla adresu %arg-2%: &4zablokowano"
+							stop
+						if {Antyproxy::wyjatek.%arg-2%} is not set:
+							send "&9&l[AntyProxy] &cStatus dla adresu %arg-2%: &abrak danych"
+							stop
+					else:
+						send "&9&l[AntyProxy] &cBlad! Adres %arg-2%&c nie moze zostac sprawdzony (prawdopodobnie nie jest numerem)"
+				else:
+					send "&9&l[AntyProxy] &cNapewno poprawnie wpisales komende? Sprawdz /antyproxy"

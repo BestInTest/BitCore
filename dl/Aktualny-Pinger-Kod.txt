@@ -1,0 +1,112 @@
+options:
+	wpinger: 1.0.2
+on load:
+	if file "plugins/Skript/scripts/Pinger.sk" doesn't exists:
+		send "&6&l[Pinger] &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: Pinger.sk" to console and all ops
+		send "&6&l[Pinger] &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
+		stop
+	if {Aktualizacja.Pinger} is true:
+		if "{@wpinger}" is text from "http://mctxt.c0.pl/skrypty/Wersja-Pinger.txt":
+			stop
+		else:
+			send "&6&l[Pinger] &1Aktualizacja..." to console and all ops
+			download from "http://mctxt.c0.pl/skrypty/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
+			wait 1 second
+			execute console command "skript reload Pinger.sk"
+
+on ping:
+	if {Pinger} is true:
+		send "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip%" to console
+	if {Pingerdlaopa} is true:
+		if {Dostawca.geo} is "geoip-db":
+			set {_Sprawdzanie::Kraj} to text from "https://geoip-db.com/json/%ip%"
+			if {_Sprawdzanie::Kraj} contains "Poland":
+				set {_Sprawdzanie::Kraj} to "PL"
+				loop all players:
+					if loop-player is op:
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 25 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 50 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 75 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 100 with colors green
+						wait 1 tick
+						remove loop-player from bossbar "ip"
+						stop
+			else:
+				loop all players:
+					if loop-player is op:
+						send "&6&l[Pinger] &cSerwer jest pingowany z adresu IP z poza polski! Kraj: &9nie mozna okreslic kraju z powodu wybranego dostawcy uslugi." to loop-player
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: &9nie mozna okreslic kraju z powodu wybranego dostawcy uslugi." and id "ip" for loop-player with progress 25 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: &9nie mozna okreslic kraju z powodu wybranego dostawcy uslugi." and id "ip" for loop-player with progress 50 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: &9nie mozna okreslic kraju z powodu wybranego dostawcy uslugi." and id "ip" for loop-player with progress 75 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: &9nie mozna okreslic kraju z powodu wybranego dostawcy uslugi." and id "ip" for loop-player with progress 100 with colors green
+						wait 1 tick
+						remove loop-player from bossbar "ip"
+						stop
+		if {Dostawca.geo} is "ip-api":
+			set {_Sprawdzanie::Kraj} to text from "http://ip-api.com/json/%ip%?fields=country"
+			wait 1 tick
+			if {_Sprawdzanie::Kraj} is "{""country"":""Poland""}":
+				set {_Sprawdzanie::Kraj} to "PL"
+				loop all players:
+					if loop-player is op:
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 25 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 50 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 75 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 100 with colors green
+						wait 1 tick
+						remove loop-player from bossbar "ip"
+						stop
+			else:
+				loop all players:
+					if loop-player is op:
+						send "&6&l[Pinger] &cSerwer jest pingowany z adresu IP z poza polski! Kraj: %{_Sprawdzanie::Kraj}%" to loop-player
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 25 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 50 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 75 with colors green
+						wait 1 second
+						create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 100 with colors green
+						wait 1 tick
+						remove loop-player from bossbar "ip"
+						stop
+		if {Dostawca.geo} is "ipapi":
+			set {_Sprawdzanie::Kraj} to text from "https://ipapi.co/%ip%/country/"
+		if {_Sprawdzanie::Kraj} is "PL":
+			loop all players:
+				if loop-player is op:
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 25 with colors green
+					wait 1 second
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 50 with colors green
+					wait 1 second
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 75 with colors green
+					wait 1 second
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 100 with colors green
+					wait 1 tick
+					remove loop-player from bossbar "ip"
+					stop
+		else:
+			loop all players:
+				if loop-player is op:
+					send "&6&l[Pinger] &cSerwer jest pingowany z adresu IP z poza polski! Kraj: %{_Sprawdzanie::Kraj}%" to loop-player
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 25 with colors green
+					wait 1 second
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 50 with colors green
+					wait 1 second
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 75 with colors green
+					wait 1 second
+					create bossbar titled "&6&l[Pinger] &eSerwer jest pingowany przez IP: &o%ip% &cKraj: %{_Sprawdzanie::Kraj}%" and id "ip" for loop-player with progress 100 with colors green
+					wait 1 tick
+					remove loop-player from bossbar "ip"
+					stop
+	else:
+		stop
