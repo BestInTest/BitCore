@@ -17,7 +17,7 @@
 # Aby weryfikacja dzialala gracz musi miec permisje sdf.admin.logins
 # Aby uzywac komend i chatu osoba z permisja sdf.admin.logins musi najpierw sie zweryfikowac
 # Aby ustawic lub zmienic haslo dla gracza musimy przez konsole wpisac komende /2step (nick) (haslo) - oczywiscie bez "(" i ")"
-# Haslo dla osob bez ustawionego hasla to: ArPxACQ8e3VqVTW8DRZy9Y6R2XZQPWEQ - mo¿na je zmienic w pliku config.yml (lokalizacja: /plugins/2Step/config.yml)
+# Haslo dla osob bez ustawionego hasla to: ArPxACQ8e3VqVTW8DRZy9Y6R2XZQPWEQ - moÂ¿na je zmienic w pliku config.yml (lokalizacja: /plugins/2Step/config.yml)
 
 
 # TRESC PONIZEJ ZOSTAW W SPOKOJU!
