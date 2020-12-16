@@ -13,7 +13,8 @@ Pluginy:
 - Skript 2.4+
 - SkQuery 4.x.x (najlepiej najnowsze)
 - Skellett 1.9.6b+
-- Repuska (opcjonalnie WildSkript 1.8.4+ [fork na nowsze wersje])
+- Repuska (Wymaga pluginu WorldEdit)
+Opcjonalnie zamiast Repuski można użyć WildSkript 1.8.4+ (fork na nowsze wersje)
 
 Wszystkie te pluginy znajdziesz w folderze dodatki
 
