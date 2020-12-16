@@ -60,8 +60,8 @@ on load:
 	broadcast "%{BitCore::*}%"
 	wait 1 tick
 	if {BitCore.aktualizacja} is true:
-		set {_BitCore.wersja} to text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt"
-		wait 1 second
+		set {_BitCore.wersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-BitCore.txt"
+		wait 1 tick
 		if {_BitCore.wersja} is "{@Wersja}":
 			send "&a&lBitCore &6&l> &aPosiadasz aktualna wersje!" to console
 			if {BitCore::*} contains "Nie mozna uzyskac informacji o aktualizacji":
@@ -85,7 +85,7 @@ on load:
 				send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console
 				send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console
 				send "&a&lBitCore &6&l> &9Pobieranie" to console
-				download from "http://79.137.50.223/download/Skript/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
 				send "&a&lBitCore &6&l> &aInstalowanie" to console
 				execute console command "skript reload bitcore.sk"
 				stop
@@ -114,10 +114,10 @@ command /bit [<text>] [<text>] [<text>]:
 			open chest with 2 rows named "&a&lBitCore" to player
 			wait 2 ticks
 			if {gui.%player%} is true:
-				set {_BitCore.wersja} to text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt"
-				set {_2Step.wersja} to text from "http://79.137.50.223/download/Skript/Wersja.txt"
-				set {_AntyProxy.wersja} to text from "http://79.137.50.223/download/Skript/Wersja-Antyproxy.txt"
-				set {_Wersja.Pinger} to text from "http://79.137.50.223/download/Skript/Wersja-Pinger.txt"
+				set {_BitCore.wersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-BitCore.txt"
+				set {_2Step.wersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja.txt"
+				set {_AntyProxy.wersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-Antyproxy.txt"
+				set {_Wersja.Pinger} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-Pinger.txt"
 				if {_BitCore.wersja} is not set:
 					set {_BitCore.wersja} to "-"
 					set {_2Step.wersja} to "-"
@@ -666,14 +666,14 @@ command /bit [<text>] [<text>] [<text>]:
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9Pinger&a." to console and all ops
 				create file "plugins/Skript/scripts/Pinger.sk"
 				wait 1 second
-				download from "http://79.137.50.223/download/Skript/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
 				execute console command "skript reload Pinger.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9Pinger&a." to console and all ops
 			if arg 2 is "2step":
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &c2Step&a." to console and all ops
 				create file "plugins/Skript/scripts/2step.sk"
 				wait 1 second
-				download from "http://79.137.50.223/download/Skript/Aktualna-awaria-Kod.txt" to "plugins/Skript/scripts/2step.sk"
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualna-awaria-Kod.txt" to "plugins/Skript/scripts/2step.sk"
 				execute console command "skript reload 2step.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &c2Step&a." to console and all ops
 				send "&c&lWazne:&r &4Pamietaj aby wykonac konfiguracje skryptu 2Step&c." to console and all ops
@@ -681,7 +681,7 @@ command /bit [<text>] [<text>] [<text>]:
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9AntyProxy&a." to console and all ops
 				create file "plugins/Skript/scripts/antyproxy.sk"
 				wait 1 second
-				download from "http://79.137.50.223/download/Skript/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
 				execute console command "skript reload antyproxy.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9AntyProxy&a." to console and all ops
 			if arg 2 is "bitcore":
@@ -690,17 +690,17 @@ command /bit [<text>] [<text>] [<text>]:
 					send "&a&lBitCore &6&l> &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
 					stop
 				wait 1 tick
-				if "{@Wersja}" is text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt":
+				if "{@Wersja}" is text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-BitCore.txt":
 					send "&a&lBitCore &6&l> &aPosiadasz aktualna wersje!" to console
 					stop
 				else:
-					set {_BitCore.najnowszawersja} to text from "http://79.137.50.223/download/Skript/Wersja-BitCore.txt"
+					set {_BitCore.najnowszawersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-BitCore.txt"
 					wait 1 tick
 					send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.najnowszawersja}%" to console and all ops
 					send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console and all ops
 					send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console and all ops
 					send "&a&lBitCore &6&l> &9Pobieranie" to console and all ops
-					download from "http://79.137.50.223/download/Skript/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
+					download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
 					send "&a&lBitCore &6&l> &aInstalowanie" to console and all ops
 					execute console command "skript reload bitcore.sk"
 					stop
