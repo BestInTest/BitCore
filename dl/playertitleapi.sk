@@ -1,0 +1,23 @@
+command /playertitle [<offlineplayer>] [<text>] [<text>]:
+	permission: player.title
+	trigger:
+		if arg 1 is set:
+			if arg 1 is online:
+				if arg 2 is set:
+					set {_playertitle.%arg-1%.gora} to coloured arg-2
+					replace all "_" with " " in {_playertitle.%arg-1%.gora}
+					wait 1 tick
+					send title {_playertitle.%arg-1%.gora} with subtitle coloured arg-3 to arg 1 for 4 seconds
+				else:
+					send "&8[&aPlayerTitleAPI&8] &7Uzycie: &b/playertitle <gracz> <tekst gora> <tekst dol>"
+					send "&8[&aPlayerTitleAPI&8] &7W tekscie gornym spacje robimy przez zastapienie jej&a ""_"""
+					send "&8[&aPlayerTitleAPI&8] &7Czas wyswietlania to 4 sekundy."
+			else:
+				send "&8[&aPlayerTitleAPI&8] &7Gracz nie jest online."
+		else:
+			send "&8[&aPlayerTitleAPI&8] &7Uzycie: &a/playertitle <gracz> <tekst gora> <tekst dol>"
+			send "&8[&aPlayerTitleAPI&8] &7W tekscie gornym spacje robimy przez zastapienie jej znakiem&a ""_"""
+			send "&8[&aPlayerTitleAPI&8] &7Czas wyswietlania to 4 sekundy."
+
+on load:
+	send "&8[&aPlayerTitleAPI&8] &bZaladowano API" to console
