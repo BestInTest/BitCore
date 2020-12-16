@@ -85,7 +85,7 @@ on load:
 				send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console
 				send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console
 				send "&a&lBitCore &6&l> &9Pobieranie" to console
-				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/bitcore.sk" to "plugins/Skript/scripts/bitcore.sk"
 				send "&a&lBitCore &6&l> &aInstalowanie" to console
 				execute console command "skript reload bitcore.sk"
 				stop
@@ -700,7 +700,7 @@ command /bit [<text>] [<text>] [<text>]:
 					send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console and all ops
 					send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console and all ops
 					send "&a&lBitCore &6&l> &9Pobieranie" to console and all ops
-					download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-BitCore-Kod.txt" to "plugins/Skript/scripts/bitcore.sk"
+					download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/bitcore.sk" to "plugins/Skript/scripts/bitcore.sk"
 					send "&a&lBitCore &6&l> &aInstalowanie" to console and all ops
 					execute console command "skript reload bitcore.sk"
 					stop
