@@ -1,5 +1,5 @@
 options:
-	Wersja: 0.961b #NIE ZMIENIAC!
+	Wersja: 1.0 #NIE ZMIENIAC!
 # Juz nie dlugo final ;)
 on load:
 	chance of 20%:
@@ -49,15 +49,14 @@ on load:
 	if file "plugins/Skript/scripts/bitcore.sk" doesn't exists:
 		send "&a&lBitCore &6&l> &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: bitcore.sk" to console and all ops
 		send "&a&lBitCore &6&l> &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
-		if {BitCore::*} contains "Nieprawdlowa nazwa pliku":
+		if {BitCore::*} contains "Nieprawidlowa nazwa pliku":
 			stop
 		else:
-			add "Nieprawdlowa nazwa pliku" to {BitCore::*}
+			add "Nieprawidlowa nazwa pliku" to {BitCore::*}
 			stop
 	else:
-		if {BitCore::*} contains "Nieprawdlowa nazwa pliku":
-			remove all "Nieprawdlowa nazwa pliku" from {BitCore::*}
-	broadcast "%{BitCore::*}%"
+		if {BitCore::*} contains "Nieprawidlowa nazwa pliku":
+			remove all "Nieprawidlowa nazwa pliku" from {BitCore::*}
 	wait 1 tick
 	if {BitCore.aktualizacja} is true:
 		set {_BitCore.wersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-BitCore.txt"
@@ -104,7 +103,7 @@ command /bit [<text>] [<text>] [<text>]:
 	trigger:
 		wait 2 ticks
 		if executor is console:
-			if arg 1 is not "instalacja":
+			if arg 1 is not "instalacja" or "odinstaluj":
 				send "&a&lBitCore &6&l> &c&lBLAD! &aSkorzystaj z GUI &o;)"
 				stop
 		if {gui.%player%} is not set:
@@ -164,7 +163,7 @@ command /bit [<text>] [<text>] [<text>]:
 			else:
 				stop
 			if {gui.%player%} is true:
-				format slot 4 of player with 1 of book named "&aInformacje o BitCore:" with lore "&7BitCore to narzedzie stworzone" and "&7do ochrony serwera przed roznymi atakami" and " " and "&aWersja zainstalowana&7: {@Wersja}" and "&bDane z serwera online&7:" and " " and "&aBitCore: &7%{_BitCore.wersja}%" and "&c2Step&8: &7%{_2Step.wersja}%" and "&6AntyProxy&8: &7%{_AntyProxy.wersja}%" and "&bPinger: &7%{_Wersja.Pinger}%" and " " to close then run [make player execute command "bit zarzadzaj"]
+				format slot 4 of player with 1 of book named "&aInformacje o BitCore:" with lore "&7BitCore to narzedzie stworzone" and "&7do ochrony serwera przed roznymi atakami" and " " and "&aWersja zainstalowana&7: {@Wersja}" and "&bDane z serwera online&7:" and " " and "&aBitCore: &7%{_BitCore.wersja}%" and "&c2Step&8: &7%{_2Step.wersja}%" and "&6AntyProxy&8: &7%{_AntyProxy.wersja}%" and "&bPinger: &7%{_Wersja.Pinger}%" and " " and "&8[&aKliknij aby zobaczyc ustawienia&8]" to close then run [make player execute command "bit zarzadzaj"]
 			else:
 				stop
 			if {gui.%player%} is true:
@@ -198,11 +197,11 @@ command /bit [<text>] [<text>] [<text>]:
 			if {gui.%player%} is true:
 				if file "plugins/Skript/scripts/-2step.sk" doesn't exists:
 					if file "plugins/Skript/scripts/2step.sk" doesn't exists:
-						format slot 12 of player with 1 of name tag named "&c2Step &8(&c&lX&8)" with lore "&7Wersja: %{_2Step.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer podwojnie" and "&8Skuteczny anty wlam ale nie ograniczajacy" and "&8dzialan administracji twojego serwera" and "" and "&9Komendy:" and "&9/2login - logowanie" and "&9/2Step - pomoc" and " " and "&8[&aKliknij aby zainstalowac&8]" to close then run [make player execute command "bit instalacja 2step"]
+						format slot 12 of player with 1 of name tag named "&c2Step &8(&c&lX&8)" with lore "&7Wersja: %{_2Step.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer podwojnie" and "&8Skuteczny anty wlam ale nie ograniczajacy" and "&8dzialan administracji Twojego serwera" and "" and "&9Komendy:" and "&9/2login - logowanie" and "&9/2Step - pomoc" and " " and "&8[&aKliknij aby zainstalowac&8]" to close then run [make player execute command "bit instalacja 2step"]
 					else:
-						format slot 12 of player with glowing 1 of name tag named "&c2Step &8(&a&lV&8)" with lore "&7Wersja: %{_2Step.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer podwojnie" and "&8Skuteczny anty wlam ale nie ograniczajacy" and "&8dzialan administracji twojego serwera" and "" and "&9Komendy:" and "&9/2login - logowanie" and "&9/2Step - pomoc" and " " and "&8[&aZainstalowano&8]" to close then run [make player execute command "bit zarzadzaj 2step"]
+						format slot 12 of player with glowing 1 of name tag named "&c2Step &8(&a&lV&8)" with lore "&7Wersja: %{_2Step.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer podwojnie" and "&8Skuteczny anty wlam ale nie ograniczajacy" and "&8dzialan administracji Twojego serwera" and "" and "&9Komendy:" and "&9/2login - logowanie" and "&9/2Step - pomoc" and " " and "&8[&aZainstalowano&8]" to close then run [make player execute command "bit zarzadzaj 2step"]
 				else:
-					format slot 12 of player with 1 of name tag named "&c2Step &8(&6&l-&8)" with lore "&7Wersja: %{_2Step.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer podwojnie" and "&8Skuteczny anty wlam ale nie ograniczajacy" and "&8dzialan administracji twojego serwera" and "" and "&9Komendy:" and "&9/2login - logowanie" and "&9/2Step - pomoc" and " " and "&8[&aKliknij aby wlaczyc&8]" to close then run [make console execute command "skript enable 2step.sk"]
+					format slot 12 of player with 1 of name tag named "&c2Step &8(&6&l-&8)" with lore "&7Wersja: %{_2Step.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer podwojnie" and "&8Skuteczny anty wlam ale nie ograniczajacy" and "&8dzialan administracji Twojego serwera" and "" and "&9Komendy:" and "&9/2login - logowanie" and "&9/2Step - pomoc" and " " and "&8[&aKliknij aby wlaczyc&8]" to close then run [make console execute command "skript enable 2step.sk"]
 			else:
 				stop
 			if {gui.%player%} is true:
@@ -234,7 +233,7 @@ command /bit [<text>] [<text>] [<text>]:
 			else:
 				stop
 			if {gui.%player%} is true:
-				format slot 17 of player with 1 of lever named " &fPomoc " with lore "&f&oWkrotce" to close then run [make player execute "bit pomoc"]
+				format slot 17 of player with 1 of lever named " &eUlepszone komunikaty " with lore "" and "&8[&aKliknij aby wybrac opcje&8]" to close then run [make player execute "bit playertitleapi"]
 			else:
 				stop
 		if arg 1 is "zarzadzaj":
@@ -422,6 +421,9 @@ command /bit [<text>] [<text>] [<text>]:
 						format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
 					else:
 						stop
+				if arg 2 is "2step":
+					execute console command "playertitle %player% &c&lBLAD! &4Jezeli chcesz skonfigurowac 2Step sprawdz folder plugins/2Step"
+					stop
 		if arg 1 is "listaproblemow":
 			if arg 2 is not set:
 				wait 2 ticks
@@ -441,10 +443,10 @@ command /bit [<text>] [<text>] [<text>]:
 				else:
 					stop
 				if {gui.%player%} is true:
-					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku":
-						format slot 2 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					if {BitCore::*} doesn't contain "Nieprawidlowa nazwa pliku":
+						format slot 2 of player with 1 of green wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
 					else:
-						format slot 2 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+						format slot 2 of player with 1 of red wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
 				else:
 					stop
 				if {gui.%player%} is true:
@@ -483,10 +485,10 @@ command /bit [<text>] [<text>] [<text>]:
 				else:
 					stop
 				if {gui.%player%} is true:
-					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku (2Step)":
-						format slot 11 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					if {BitCore::*} doesn't contain "Nieprawidlowa nazwa pliku (2Step)":
+						format slot 11 of player with 1 of green wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
 					else:
-						format slot 11 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+						format slot 11 of player with 1 of red wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
 				else:
 					stop
 				if {gui.%player%} is true:
@@ -514,21 +516,21 @@ command /bit [<text>] [<text>] [<text>]:
 				else:
 					stop
 				if {gui.%player%} is true:
-					format slot 18 of player with 1 of book named "AntyPrcxy" to be unstealable
+					format slot 18 of player with 1 of book named "AntyProxy" to be unstealable
 				else:
 					stop
 				if {gui.%player%} is true:
-					if {BitCore::*} doesn't contain "Nie mozna uzyskac informacji o aktualizacji (AntyPrcxy)":
+					if {BitCore::*} doesn't contain "Nie mozna uzyskac informacji o aktualizacji (AntyProxy)":
 						format slot 19 of player with 1 of green wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&aNie wykryto problemu" to be unstealable
 					else:
 						format slot 19 of player with 1 of red wool named "&cNie mozna uzyskac informacji o aktualizacji" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
 				else:
 					stop
 				if {gui.%player%} is true:
-					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku (AntyProxy)":
-						format slot 20 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					if {BitCore::*} doesn't contain "Nieprawidlowa nazwa pliku (AntyProxy)":
+						format slot 20 of player with 1 of green wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
 					else:
-						format slot 20 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+						format slot 20 of player with 1 of red wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
 				else:
 					stop
 				if {gui.%player%} is true:
@@ -567,10 +569,10 @@ command /bit [<text>] [<text>] [<text>]:
 				else:
 					stop
 				if {gui.%player%} is true:
-					if {BitCore::*} doesn't contain "Nieprawdlowa nazwa pliku (Pinger)":
-						format slot 29 of player with 1 of green wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
+					if {BitCore::*} doesn't contain "Nieprawidlowa nazwa pliku (Pinger)":
+						format slot 29 of player with 1 of green wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&aNie wykryto problemu" to be unstealable
 					else:
-						format slot 29 of player with 1 of red wool named "&cNieprawdlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
+						format slot 29 of player with 1 of red wool named "&cNieprawidlowa nazwa pliku" with lore " " and "&cZ tym elementem wykryto problem" to be unstealable
 				else:
 					stop
 				if {gui.%player%} is true:
@@ -665,23 +667,23 @@ command /bit [<text>] [<text>] [<text>]:
 			if arg 2 is "pinger":
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9Pinger&a." to console and all ops
 				create file "plugins/Skript/scripts/Pinger.sk"
-				wait 1 second
+				wait 1 tick
 				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
 				execute console command "skript reload Pinger.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9Pinger&a." to console and all ops
 			if arg 2 is "2step":
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &c2Step&a." to console and all ops
 				create file "plugins/Skript/scripts/2step.sk"
-				wait 1 second
-				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualna-awaria-Kod.txt" to "plugins/Skript/scripts/2step.sk"
+				wait 1 tick
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/2step.sk" to "plugins/Skript/scripts/2step.sk"
 				execute console command "skript reload 2step.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &c2Step&a." to console and all ops
 				send "&c&lWazne:&r &4Pamietaj aby wykonac konfiguracje skryptu 2Step&c." to console and all ops
 			if arg 2 is "antyproxy":
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9AntyProxy&a." to console and all ops
 				create file "plugins/Skript/scripts/antyproxy.sk"
-				wait 1 second
-				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
+				wait 1 tick
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/antyproxy.sk" to "plugins/Skript/scripts/antyproxy.sk"
 				execute console command "skript reload antyproxy.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9AntyProxy&a." to console and all ops
 			if arg 2 is "bitcore":
@@ -704,6 +706,12 @@ command /bit [<text>] [<text>] [<text>]:
 					send "&a&lBitCore &6&l> &aInstalowanie" to console and all ops
 					execute console command "skript reload bitcore.sk"
 					stop
+			if arg 2 is "playertitleapi":
+				send "&a&lBitCore &6&l> &aInstalowanie skryptu &ePlayerTitleAPI&a." to console and all ops
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/playertitleapi.sk" to "plugins/Skript/scripts/playertitleapi.sk"
+				execute console command "skript reload playertitleapi.sk"
+				send "&a&lBitCore &6&l> &aZainstalowano skrypt &ePlayerTitleAPI&a." to console and all ops
+				stop
 		if arg 1 is "odinstaluj":
 			if arg 2 is not set:
 				wait 2 ticks
@@ -747,64 +755,154 @@ command /bit [<text>] [<text>] [<text>]:
 					format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
 				else:
 					stop
-			else:
-				if arg 2 is "pinger":
-					send "&a&lBitCore &6&l> &cOdinstalowywanie Pinger"
-					if file "plugins/Skript/scripts/Pinger.sk" doesn't exists:
-						send "&a&lBitCore &6&l> &fPilk ""&ePinger.sk&f"" nie istnieje. Pomijam wylaczanie..."
+			if arg 2 is "pinger":
+				send "&a&lBitCore &6&l> &cOdinstalowywanie Pinger"
+				if file "plugins/Skript/scripts/Pinger.sk" doesn't exists:
+					send "&a&lBitCore &6&l> &fPilk ""&ePinger.sk&f"" nie istnieje. Pomijam wylaczanie..."
+				else:
+					execute console command "skript disable Pinger.sk"
+				wait 1 seconds
+				if file "plugins/Skript/scripts/Pinger.sk" doesn't exists:
+					if file "plugins/Skript/scripts/-Pinger.sk" doesn't exists:
+						send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac Pinger: &fPlik ""&e-Pinger.sk&f"" nie istnieje."
+						stop
 					else:
-						execute console command "skript disable Pinger.sk"
-					wait 3 seconds
-					if file "plugins/Skript/scripts/Pinger.sk" doesn't exists:
-						if file "plugins/Skript/scripts/-Pinger.sk" doesn't exists:
-							send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac Pinger: &fPlik ""&e-Pinger.sk&f"" nie istnieje."
-							stop
-						else:
-							delete file "plugins/Skript/scripts/-Pinger.sk"
-							send "&a&lBitCore &6&l> &aPomyslnie odinstalowano Pinger"
-							stop
-					else:
-						send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac Pinger: &fPlik ""&ePinger.sk&f"" nie zostal poprawnie wylaczony."
+						delete file "plugins/Skript/scripts/-Pinger.sk"
+						send "&a&lBitCore &6&l> &aPomyslnie odinstalowano Pinger"
 						stop
 				else:
-					if arg 2 is "antyproxy":
-						send "&a&lBitCore &6&l> &cOdinstalowywanie AntyProxy"
-						if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
-							send "&a&lBitCore &6&l> &fPilk ""&eantyproxy.sk&f"" nie istnieje. Pomijam wylaczanie..."
-						else:
-							execute console command "skript disable antyproxy.sk"
-						wait 3 seconds
-						if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
-							if file "plugins/Skript/scripts/-antyproxy.sk" doesn't exists:
-								send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac AntyProxy: &fPlik ""&e-antyproxy.sk&f"" nie istnieje."
-								stop
-							else:
-								delete file "plugins/Skript/scripts/-antyproxy.sk"
-								send "&a&lBitCore &6&l> &aPomyslnie odinstalowano AntyProxy"
-								stop
-						else:
-							send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac AntyProxy: &fPlik ""&eantyproxy.sk&f"" nie zostal poprawnie wylaczony."
-							stop
+					send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac Pinger: &fPlik ""&ePinger.sk&f"" nie zostal poprawnie wylaczony."
+					stop
+			if arg 2 is "antyproxy":
+				send "&a&lBitCore &6&l> &cOdinstalowywanie AntyProxy"
+				if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
+					send "&a&lBitCore &6&l> &fPilk ""&eantyproxy.sk&f"" nie istnieje. Pomijam wylaczanie..."
+				else:
+					execute console command "skript disable antyproxy.sk"
+				wait 1 seconds
+				if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
+					if file "plugins/Skript/scripts/-antyproxy.sk" doesn't exists:
+						send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac AntyProxy: &fPlik ""&e-antyproxy.sk&f"" nie istnieje."
+						stop
 					else:
-						if arg 2 is "2step":
-							send "&a&lBitCore &6&l> &cOdinstalowywanie 2Step"
-							if file "plugins/Skript/scripts/2step.sk" doesn't exists:
-								send "&a&lBitCore &6&l> &fPilk ""&e-2step.sk&f"" nie istnieje. Pomijam wylaczanie..."
-							else:
-								execute console command "skript disable 2step.sk"
-							wait 3 seconds
-							if file "plugins/Skript/scripts/2step.sk" doesn't exists:
-								if file "plugins/Skript/scripts/-2step.sk" doesn't exists:
-									send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac 2Step: &fPlik ""&e-2step.sk&f"" nie istnieje."
-									stop
-								else:
-									delete file "plugins/Skript/scripts/-2step.sk"
-									send "&a&lBitCore &6&l> &aPomyslnie odinstalowano 2Step"
-									stop
-							else:
-								send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac 2Step: &fPlik ""&e2step.sk&f"" nie zostal poprawnie wylaczony."
-								stop
+						delete file "plugins/Skript/scripts/-antyproxy.sk"
+						send "&a&lBitCore &6&l> &aPomyslnie odinstalowano AntyProxy"
+						stop
+				else:
+					send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac AntyProxy: &fPlik ""&eantyproxy.sk&f"" nie zostal poprawnie wylaczony."
+					stop
+			if arg 2 is "2step":
+				send "&a&lBitCore &6&l> &cOdinstalowywanie 2Step"
+				if file "plugins/Skript/scripts/2step.sk" doesn't exists:
+					send "&a&lBitCore &6&l> &fPilk ""&e-2step.sk&f"" nie istnieje. Pomijam wylaczanie..."
+				else:
+					execute console command "skript disable 2step.sk"
+				wait 1 seconds
+				if file "plugins/Skript/scripts/2step.sk" doesn't exists:
+					if file "plugins/Skript/scripts/-2step.sk" doesn't exists:
+						send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac 2Step: &fPlik ""&e-2step.sk&f"" nie istnieje."
+						stop
+					else:
+						delete file "plugins/Skript/scripts/-2step.sk"
+						send "&a&lBitCore &6&l> &aPomyslnie odinstalowano 2Step"
+						stop
+				else:
+					send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac 2Step: &fPlik ""&e2step.sk&f"" nie zostal poprawnie wylaczony."
+					stop
+			if arg 2 is "playertitleapi":
+				send "&a&lBitCore &6&l> &cOdinstalowywanie PlayerTitleAPI"
+				if file "plugins/Skript/scripts/playertitleapi.sk" doesn't exists:
+					send "&a&lBitCore &6&l> &fPilk ""&eplayertitleapi.sk&f"" nie istnieje. Pomijam wylaczanie..."
+				else:
+					execute console command "skript disable playertitleapi.sk"
+				wait 1 seconds
+				if file "plugins/Skript/scripts/playertitleapi.sk" doesn't exists:
+					if file "plugins/Skript/scripts/-playertitleapi.sk" doesn't exists:
+						send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac PlayerTitleAPI: &fPlik ""&e-playertitleapi.sk&f"" nie istnieje."
+						stop
+					else:
+						delete file "plugins/Skript/scripts/-playertitleapi.sk"
+						send "&a&lBitCore &6&l> &aPomyslnie odinstalowano PlayerTitleAPI"
+						stop
+				else:
+					send "&a&lBitCore &6&l> &c&lBLAD! Nie mozna odinstalowac Pinger: &fPlik ""&eplayertitleapi.sk&f"" nie zostal poprawnie wylaczony."
+					stop
+		if arg 1 is "playertitleapi":
+			wait 2 ticks
+			set {gui.%player%} to true
+			wait 1 tick
+			open chest with 1 rows named "&a&lBC &7&l&m&o|&e&l ulepszone komunikaty" to player
+			wait 1 tick
+			if {gui.%player%} is true:
+				format slot 0 of player with 1 of glass pane named " " to be unstealable
+			else:
+				stop
+			if {gui.%player%} is true:
+				format slot 1 of player with 1 of glass pane named " " to be unstealable
+			else:
+				stop
+			if {gui.%player%} is true:
+				format slot 2 of player with 1 of glass pane named " " to be unstealable
+			else:
+				stop
+			if {gui.%player%} is true:
+				if file "plugins/Skript/scripts/playertitleapi.sk" doesn't exists:
+					format slot 3 of player with glowing 1 of nametag named "&cNie zainstalowano" to be unstealable
+				else:
+					format slot 3 of player with 1 of nametag named "&cOdinstaluj" to close then run [execute player command "bitcore odinstaluj playertitleapi"]
+			else:
+				stop
+			if {gui.%player%} is true:
+				format slot 4 of player with 1 of book named "&aInformacje o ulepszonych komunikatach" with lore "" and "&7Ulepszone komunikaty pojawiaja sie" and "&7po wybieraniu ustawien dodatkow" and "&7w panelu BitCore." and "" and "&cZalecane jest pozostawienie domyslnej" and "&cnazwy skryptu (playertitleapi.sk)." to be unstealable
+			else:
+				stop
+			if {gui.%player%} is true:
+				if file "plugins/Skript/scripts/playertitleapi.sk" exists:
+					format slot 5 of player with glowing 1 of compass named "&aZainstalowano" to be unstealable
+				else:
+					format slot 5 of player with 1 of compass named "&aZainstaluj" to close then run [execute player command "bitcore instalacja playertitleapi"]
+			else:
+				stop
+			if {gui.%player%} is true:
+				format slot 6 of player with 1 of glass pane named " " to be unstealable
+			else:
+				stop
+			if {gui.%player%} is true:
+				format slot 7 of player with 1 of glass pane named " " to be unstealable
+			else:
+				stop
+			if {gui.%player%} is true:
+				format slot 8 of player with 1 of barrier block named "&cCofnij" to close then run [make player execute "bitcore"]
+			else:
+				stop
 
 on inventory close:
 	if {gui.%player%} is true:
 		set {gui.%player%} to false
+
+every 12 real hours:
+	if file "plugins/Skript/scripts/bitcore.sk" doesn't exists:
+		send "&a&lBitCore &6&l> &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: bitcore.sk" to console and all ops
+		send "&a&lBitCore &6&l> &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
+		stop
+	if {BitCore.aktualizacja} is true:
+		send "&a&lBitCore &6&l> &aSprawdzanie aktualizacji..." to console and all ops
+		set {_BitCore.najnowszawersja} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-BitCore.txt"
+		if "{@Wersja}" is {_BitCore.najnowszawersja}:
+			send "&a&lBitCore &6&l> &aPosiadasz aktualna wersje!" to console and all ops
+			stop
+		else:
+			if {BitCore.autoaktualizacja} is true:
+				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.najnowszawersja}%" to console and all ops
+				send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console and all ops
+				send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console and all ops
+				send "&a&lBitCore &6&l> &9Pobieranie" to console and all ops
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/bitcore.sk" to "plugins/Skript/scripts/bitcore.sk"
+				send "&a&lBitCore &6&l> &aInstalowanie" to console and all ops
+				execute console command "skript reload bitcore.sk"
+				stop
+			else:
+				send "&a&lBitCore &6&l> &cWykryto nowsza wersje (%{_BitCore.najnowszawersja}%)." to console and all ops
+				send "&a&lBitCore &6&l> &cZ powodu wylaczonej autoaktualizacji musisz manualnie wejsc w panel (/bit) lub zrestartowac serwer (zalecane)." to console and all ops
+	else:
+		send "&a&lBitCore &6&l> &cNie mozna sprawdzic aktualizcji: sprawdzanie jest wylaczone." to console and all ops
