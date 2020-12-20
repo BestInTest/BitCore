@@ -6,11 +6,11 @@ on load:
 		send "&6&l[Pinger] &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
 		stop
 	if {Aktualizacja.Pinger} is true:
-		if "{@wpinger}" is text from "http://mctxt.c0.pl/skrypty/Wersja-Pinger.txt":
+		if "{@wpinger}" is text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-Pinger.txt":
 			stop
 		else:
 			send "&6&l[Pinger] &1Aktualizacja..." to console and all ops
-			download from "http://mctxt.c0.pl/skrypty/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
+			download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
 			wait 1 second
 			execute console command "skript reload Pinger.sk"
 
