@@ -1,20 +1,35 @@
 options:
-	wersja: 1.3
+	wersja: 1.4
+	kontakt: &9&odiscord.gg/4SS8WRY # Mozna zmienic
 
 on load:
+	set {_wer} to text from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Wersja-Antyproxy.txt"
+	if {_wer} is not set:
+		if {BitCore::*} don't contain "Nie mozna uzyskac informacji o aktualizacji (AntyProxy)":
+			add "Nie mozna uzyskac informacji o aktualizacji (AntyProxy)" to {BitCore::*}
+			send "&9&l[AntyProxy] &cAntyproxy pracuje w trybie offline. Moga wystapic liczne bledy. Zalecane jest wylaczanie sprawdzania w panelu BitCore." to console and all ops
+		stop
+	if {BitCore::*} contains "Nie mozna uzyskac informacji o aktualizacji (AntyProxy)":
+		remove all "Nie mozna uzyskac informacji o aktualizacji (AntyProxy)" from {BitCore::*}
 	if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
 		send "&9&l[AntyProxy] &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: antyproxy.sk" to console and all ops
 		send "&9&l[AntyProxy] &c&lUwzglednij &nwielkosc&r&c znakow! Pamietaj tez, ze "".sk""&c to &nrozszezenie&r&c pliku." to console and all ops
+		if {BitCore::*} don't contain "Nieprawdlowa nazwa pliku (AntyProxy)":
+			add "Nieprawdlowa nazwa pliku (AntyProxy)" to {BitCore::*}
 		stop
+	if {BitCore::*} contains "Nieprawidlowa nazwa pliku (AntyProxy)":
+		remove all "Nieprawdlowa nazwa pliku (AntyProxy)" from {BitCore::*}
 	if {Antyproxy::update} is true:
-		if "{@wersja}" is text from "http://mctxt.c0.pl/skrypty/Wersja-Antyproxy.txt":
-			stop
+		if "{@wersja}" is {_wer}:
+			send "&9&l[AntyProxy] &aPosiadasz aktualna wersje." to console and all ops
 		else:
 			send "&9&l[AntyProxy] &aAktualizacja..." to console and all ops
-			download from "http://mctxt.c0.pl/skrypty/Aktualny-Antyproxy-Kod.txt" to "plugins/Skript/scripts/antyproxy.sk"
-			wait 2 second
+			download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/antyproxy.sk" to "plugins/Skript/scripts/antyproxy.sk"
+			wait 1 second
 			execute console command "skript reload antyproxy.sk"
 			send "&9&l[AntyProxy] &aZaktualizowano." to console and all ops
+	else:
+		send "&9&l[AntyProxy] &cAktualizacje sa wylaczone." to console and all ops
 
 on connect:
 	if {Antyproxy::wyjatek.%player's ip%} is false:
@@ -22,26 +37,47 @@ on connect:
 		stop
 	if {Antyproxy::wyjatek.%player's ip%} is true:
 		stop
-	if {AntyProxy::sprProxy} is true:
-		if text from "https://blackbox.ipinfo.app/lookup/%player's ip%" is "Y":
-			kick player due to "&7Twoj adres IP zostal uznany za proxy. Jezli uwazasz, ze to blad zglos to do nas: &9&odiscord.gg/4SS8WRY"
+	if {Antyproxy::zapisywanie} is true:
+		if {Antyproxy::zapisywanie.%player's ip%} is true:
 			stop
+	if {AntyProxy::sprProxy} is true:
+		if {Antyproxy::zapisywanie.proxy} is true:
+			if {Antyproxy::zapisywanie.proxy.%player's ip%} is false:
+				kick player due to "&7Twoj adres IP zostal uznany za proxy. Jezli uwazasz, ze to blad zglos to do nas: {@kontakt}"
+				stop
+			else:
+				if {Antyproxy::zapisywanie.proxy.%player's ip%} is true:
+					stop
+		if text from "https://blackbox.ipinfo.app/lookup/%player's ip%" is "Y":
+			kick player due to "&7Twoj adres IP zostal uznany za proxy. Jezli uwazasz, ze to blad zglos to do nas: {@kontakt}"
+			if {Antyproxy::zapisywanie.proxy} is true:
+				set {Antyproxy::zapisywanie.proxy.%player's ip%} to false
+			stop
+		else:
+			if {Antyproxy::zapisywanie.proxy} is true:
+				set {Antyproxy::zapisywanie.proxy.%player's ip%} to true
 	if {Antyproxy::wlaczenie} is true:
 		if {Antyproxy::dostawca} is "ipapi":
 			if text from "https://ipapi.co/%ip%/country/" is "PL":
 				wait 1 tick
+				if {Antyproxy::zapisywanie} is true:
+					set {Antyproxy::zapisywanie.%player's ip%} to true
 				stop
 			else:
 				kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu wykrycia polaczenia niepochodzacego z Polski."
 		if {Antyproxy::dostawca} is "ip-api":
 			if text from "http://ip-api.com/json/%ip%?fields=country" is "{""country"":""Poland""}":
 				wait 1 tick
+				if {Antyproxy::zapisywanie} is true:
+					set {Antyproxy::zapisywanie.%player's ip%} to true
 				stop
 			else:
 				kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu wykrycia polaczenia niepochodzacego z Polski."
 		if {Antyproxy::dostawca} is "geoip-db":
 			if text from "http://geolocation-db.com/jsonp/%ip%/" contains "Poland":
 				wait 1 tick
+				if {Antyproxy::zapisywanie} is true:
+					set {Antyproxy::zapisywanie.%player's ip%} to true
 				stop
 			else:
 				kick player due to " &7Polaczenie z serwerem zostalo przerwane z powodu wykrycia polaczenia niepochodzacego z Polski."
@@ -90,4 +126,4 @@ command /antyproxy [<text>] [<text>]:
 					else:
 						send "&9&l[AntyProxy] &cBlad! Adres %arg-2%&c nie moze zostac sprawdzony (prawdopodobnie nie jest numerem)"
 				else:
-					send "&9&l[AntyProxy] &cNapewno poprawnie wpisales komende? Sprawdz /antyproxy"
+					send "&9&l[AntyProxy] &cNa pewno poprawnie wpisales komende? Sprawdz /antyproxy"
