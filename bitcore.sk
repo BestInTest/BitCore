@@ -1,6 +1,6 @@
 options:
-	Wersja: 1.1 #NIE ZMIENIAC!
-# Juz nie dlugo final ;)
+	Wersja: 1.2 #NIE ZMIENIAC!
+
 on load:
 	chance of 20%:
 		set {_smiesznewiadomosci} to "&9Do you want to format your disk? ( y / n )"
@@ -80,7 +80,7 @@ on load:
 					send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc nie dostepne." to console
 					stop
 			if {BitCore.autoaktualizacja} is true:
-				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.najnowszawersja}%" to console
+				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.wersja}%" to console
 				send "&a&lBitCore &6&l> &aPrzydala by sie aktualizacja? Potrzymaj mi piwo, ja to zrobie." to console
 				send "&a&lBitCore &6&l> &aUwaga! Sliska podloga! Prosze czekac!" to console
 				send "&a&lBitCore &6&l> &9Pobieranie" to console
@@ -89,8 +89,8 @@ on load:
 				execute console command "skript reload bitcore.sk"
 				stop
 			else:
-				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.najnowszawersja}%" to console
-				send "&a&lBitCore &6&l> &cNatychmiast zaktualizuj swoja wersje do %{_BitCore.najnowszawersja}%" to console
+				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.wersja}%" to console
+				send "&a&lBitCore &6&l> &cNatychmiast zaktualizuj swoja wersje do %{_BitCore.wersja}%" to console
 				stop
 	else:
 		send "&a&lBitCore &6&l> &9Nie mozna sprawdzic aktualizacji: sprawdzanie aktualizacji wylaczone." to console
