@@ -1,5 +1,5 @@
 options:
-	Wersja: 1.0 #NIE ZMIENIAC!
+	Wersja: 1.1 #NIE ZMIENIAC!
 # Juz nie dlugo final ;)
 on load:
 	chance of 20%:
@@ -668,7 +668,7 @@ command /bit [<text>] [<text>] [<text>]:
 				send "&a&lBitCore &6&l> &aInstalowanie skryptu &9Pinger&a." to console and all ops
 				create file "plugins/Skript/scripts/Pinger.sk"
 				wait 1 tick
-				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
+				download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Pinger.sk" to "plugins/Skript/scripts/Pinger.sk"
 				execute console command "skript reload Pinger.sk"
 				send "&a&lBitCore &6&l> &aZainstalowano skrypt &9Pinger&a." to console and all ops
 			if arg 2 is "2step":
