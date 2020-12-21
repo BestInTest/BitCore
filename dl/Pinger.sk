@@ -1,5 +1,5 @@
 options:
-	wpinger: 1.0.2
+	wpinger: 1.0.3
 on load:
 	if file "plugins/Skript/scripts/Pinger.sk" doesn't exists:
 		send "&6&l[Pinger] &cUstawiona nazwa skryptu jest nieprawidlowa. Natychmiast ja zmien na: Pinger.sk" to console and all ops
@@ -10,7 +10,7 @@ on load:
 			stop
 		else:
 			send "&6&l[Pinger] &1Aktualizacja..." to console and all ops
-			download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Aktualny-Pinger-Kod.txt" to "plugins/Skript/scripts/Pinger.sk"
+			download from "https://raw.githubusercontent.com/BestInTest/BitCore/main/dl/Pinger.sk" to "plugins/Skript/scripts/Pinger.sk"
 			wait 1 second
 			execute console command "skript reload Pinger.sk"
 
