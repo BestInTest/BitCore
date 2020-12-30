@@ -1,5 +1,5 @@
 options:
-	Wersja: 1.2 #NIE ZMIENIAC!
+	Wersja: 1.2.1 #NIE ZMIENIAC!
 
 on load:
 	chance of 20%:
@@ -70,14 +70,14 @@ on load:
 		else:
 			if {_BitCore.wersja} is not set:
 				if {BitCore::*} contains "Nie mozna uzyskac informacji o aktualizacji":
-					send "&a&lBitCore &6&l> &eBitCore pracuje w trybie offline. Niektore funkcje moga byc nie dostepne." to console and all ops
+					send "&a&lBitCore &6&l> &eBitCore pracuje w trybie offline. Niektore funkcje moga byc niedostepne." to console and all ops
 					stop
 				else:
 					send "&a&lBitCore &6&l> &cNie mozna sprawdzic aktualizacji:" to console
 					send "&a&lBitCore &6&l> &cPrawdopodobnie nie mozna uzyskac dostepu do internetu lub serwera" to console
 					send "&a&lBitCore &6&l> &9Sprawdz zapore sieciowa i samo polaczenie z internetem" to console
 					add "Nie mozna uzyskac informacji o aktualizacji" to {BitCore::*}
-					send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc nie dostepne." to console
+					send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc niedostepne." to console
 					stop
 			if {BitCore.autoaktualizacja} is true:
 				send "&a&lBitCore &6&l> &9Posiadasz wersje {@Wersja} natomiast najnowsza wersja to %{_BitCore.wersja}%" to console
@@ -127,7 +127,7 @@ command /bit [<text>] [<text>] [<text>]:
 						send "&a&lBitCore &6&l> &cNie mozna sprawdzic aktualizacji:" to console and all ops
 						send "&a&lBitCore &6&l> &cPrawdopodbnie nie mozna uzyskac dostepu do internetu lub serwera" to console and all ops
 						send "&a&lBitCore &6&l> &9Sprawdz zapore sieciowa i samo polaczenie z internetem" to console and all ops
-						send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc nie dostepne." to console and all ops
+						send "&a&lBitCore &6&l> &ePrzelaczanie w tryb offline. Niektore funkcje moga byc niedostepne." to console and all ops
 				else:
 					if {BitCore::*} contains "Nie mozna uzyskac informacji o aktualizacji":
 						send "&a&lBitCore &6&l> &2Nawiazano polaczenie. Wylaczanie trybu offline." to console and all ops
@@ -207,11 +207,11 @@ command /bit [<text>] [<text>] [<text>]:
 			if {gui.%player%} is true:
 				if file "plugins/Skript/scripts/-antyproxy.sk" doesn't exists:
 					if file "plugins/Skript/scripts/antyproxy.sk" doesn't exists:
-						format slot 13 of player with 1 of flint and steel named "&6AntyProxy &8(&c&lX&8)" with lore "&7Wersja: %{_AntyProxy.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer przed" and "&8przed proxy, VPN i torem." and "&8Blokuje wszystkie IP ktore nie sa polskie." and " " and "&9Komendy:" and "&9/antyproxy" and " " and "&8[&aKliknij aby zainstalowac&8]" to close then run [make player execute command "bit instalacja antyproxy"]
+						format slot 13 of player with 1 of flint and steel named "&6AntyProxy &8(&c&lX&8)" with lore "&7Wersja: %{_AntyProxy.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer przed" and "&8proxy, VPN i torem." and "&8Blokuje wszystkie IP ktore nie sa polskie." and " " and "&9Komendy:" and "&9/antyproxy" and " " and "&8[&aKliknij aby zainstalowac&8]" to close then run [make player execute command "bit instalacja antyproxy"]
 					else:
-						format slot 13 of player with glowing 1 of flint and steel named "&6AntyProxy &8(&a&lV&8)" with lore "&7Wersja: %{_AntyProxy.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer przed" and "&8przed proxy, VPN i torem." and "&8Blokuje wszystkie IP ktore nie sa polskie." and " " and "&9Komendy:" and "&9/antyproxy" and " " and "&8[&aKliknij aby zarzadzac&8]" to close then run [make player execute command "bit zarzadzaj antyproxy"]
+						format slot 13 of player with glowing 1 of flint and steel named "&6AntyProxy &8(&a&lV&8)" with lore "&7Wersja: %{_AntyProxy.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer przed" and "&8proxy, VPN i torem." and "&8Blokuje wszystkie IP ktore nie sa polskie." and " " and "&9Komendy:" and "&9/antyproxy" and " " and "&8[&aKliknij aby zarzadzac&8]" to close then run [make player execute command "bit zarzadzaj antyproxy"]
 				else:
-					format slot 13 of player with 1 of flint and steel named "&6AntyProxy &8(&6&l-&8)" with lore "&7Wersja: %{_AntyProxy.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer przed" and "&8przed proxy, VPN i torem." and "&8Blokuje wszystkie IP ktore nie sa polskie." and " " and "&9Komendy:" and "&9/antyproxy" and " " and "&8[&aKliknij aby wlaczyc&8]" to close then run [make console execute command "skript enable antyproxy.sk"]
+					format slot 13 of player with 1 of flint and steel named "&6AntyProxy &8(&6&l-&8)" with lore "&7Wersja: %{_AntyProxy.wersja}%" and " " and "&8Opis:" and "&8Zabezpiecz swoj serwer przed" and "&8proxy, VPN i torem." and "&8Blokuje wszystkie IP ktore nie sa polskie." and " " and "&9Komendy:" and "&9/antyproxy" and " " and "&8[&aKliknij aby wlaczyc&8]" to close then run [make console execute command "skript enable antyproxy.sk"]
 			else:
 				stop
 			if {gui.%player%} is true:
